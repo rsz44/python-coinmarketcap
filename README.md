@@ -1,6 +1,6 @@
 # Python-CoinMarketCap API Wrapper
 
-This is a non official (but working) Python package to wrap the CoinMarketCap API.
+This is a non official (but working) Python (2.7 & 3) package to wrap the CoinMarketCap API.
 
 With this you can monitoring and watch the crypto market.
 
