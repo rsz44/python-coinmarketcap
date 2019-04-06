@@ -32,7 +32,7 @@ from requests import Request, Session
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 import json
 
-VERSION="0.1"
+VERSION="0.1a"
 LOGGING_CONFIG = {  
   'version': 1,
   'formatters':{
