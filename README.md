@@ -105,3 +105,10 @@ You can also passing directly a logger instance :
 ## ChangeLog
 ​
 - 6 apr 2019: Version 0.1
+
+## Give me a coffee
+
+```
+	BTC: 39aosiow4nsUvYVA2kP1hZPNZ7ZbJ6ouKr
+	ETH: 0x45d940FDA3F1Ce91cA7CB478af72170bb6560201
+```
