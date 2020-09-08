@@ -32,7 +32,8 @@ from requests import Request, Session
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 import json
 
-VERSION="0.1a"
+VERSION="0.2"
+SANDBOX_API_KEY = 'b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c'
 LOGGING_CONFIG = {  
   'version': 1,
   'formatters':{
@@ -55,7 +56,6 @@ LOGGING_CONFIG = {
 
 class APITimer(object):
   """APITimer"""
-
   def __init__(self):
     self.__t = time.time()
 
@@ -116,10 +116,8 @@ class CoinMarketCapAPIError(Exception):
     self.rep = r
 
 class CoinMarketCapAPI(object):
-   
-
   """CoinMarketCapAPI Wrapper Class"""
-  def __init__(self, api_key, **kwargs):
+  def __init__(self, api_key=None, **kwargs):
     self.__session = Session()
     self.__logger = kwargs.get('logger', None)
     self.__debug = kwargs.get('debug', False)
@@ -129,11 +127,12 @@ class CoinMarketCapAPI(object):
       self.__logger = logging.getLogger()
 
     self.__version = kwargs.get('version', 'v1')
-    self.__sandbox = kwargs.get('sandbox', True)
-    self.__key = api_key
+    self.__sandbox = True if api_key == None else kwargs.get('sandbox', False)
+    self.__key = SANDBOX_API_KEY if api_key == None else api_key
     self.__base_url = 'https://sandbox-api.coinmarketcap.com/' if self.__sandbox else 'https://pro-api.coinmarketcap.com/'
     self.__headers = {
         'Accepts': 'application/json',
+        'Accept-Encoding': 'deflate, gzip',
         'X-CMC_PRO_API_KEY': api_key
     }
 
@@ -152,56 +151,211 @@ class CoinMarketCapAPI(object):
       if self.__debug:
         self.__logger.debug(rep)
       if rep.error:
+        if rep.error_code == 401 and "API Key is invalid" in rep.error_message and self.__debug:
+          ak = 'sandbox-api' if self.__sandbox else 'pro-api'
+          self.__logger.warning('Be sure you are using a {} key or set `sandbox={}` to CoinMarketCapAPI, see issue #1(https://github.com/rsz44/python-coinmarketcap/issues/1).'.format(ak, not self.__sandbox))
         raise CoinMarketCapAPIError(rep)
       return rep
     except (ConnectionError, Timeout, TooManyRedirects) as e:
       self.__logger.warning(e)
       raise e
 
-  def cryptocurrency_info(self, **kwargs):
-    return self.__get('{}/cryptocurrency/info'.format(self.__version), **kwargs)
-
   def cryptocurrency_map(self, **kwargs):
+    """
+      CoinMarketCap ID map
+
+      See also : https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyMap
+    """
     return self.__get('{}/cryptocurrency/map'.format(self.__version), **kwargs)
 
+  def cryptocurrency_info(self, **kwargs):
+    """
+      Metadata
+
+      See also : https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyInfo
+    """
+    return self.__get('{}/cryptocurrency/info'.format(self.__version), **kwargs)
+
   def cryptocurrency_listings_latest(self, **kwargs):
+    """
+      Latest listings
+
+      See also : https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyListingsLatest
+    """
     return self.__get('{}/cryptocurrency/listings/latest'.format(self.__version), **kwargs)
 
-  def cryptocurrency_market_pairs_latest(self, **kwargs):
-    return self.__get('{}/cryptocurrency/market-pairs/latest'.format(self.__version), **kwargs)
+  def cryptocurrency_listings_historical(self, **kwargs):
+    """
+      Historical listings
 
-  def cryptocurrency_ohlcv_historical(self, **kwargs):
-    return self.__get('{}/cryptocurrency/ohlcv/historical'.format(self.__version), **kwargs)
+      See also : https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyListingsHistorical
+    """
+    return self.__get('{}/cryptocurrency/listings/historical'.format(self.__version), **kwargs)
 
   def cryptocurrency_quotes_latest(self, **kwargs):
+    """
+      Latest quotes
+
+      See also : https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyQuotesLatest
+    """
     return self.__get('{}/cryptocurrency/quotes/latest'.format(self.__version), **kwargs)
 
   def cryptocurrency_quotes_historical(self, **kwargs):
+    """
+      Historical quotes
+
+      See also : https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyQuotesHistorical
+    """
     return self.__get('{}/cryptocurrency/quotes/historical'.format(self.__version), **kwargs)
 
-  def exchange_info(self, **kwargs):
-    return self.__get('{}/exchange/info'.format(self.__version), **kwargs)
+  def cryptocurrency_marketpairs_latest(self, **kwargs):
+    """
+      Latest market pairs
+
+      See also : https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyMarketpairsLatest
+    """
+    return self.__get('{}/cryptocurrency/market-pairs/latest'.format(self.__version), **kwargs)
+
+  def cryptocurrency_ohlcv_latest(self, **kwargs):
+    """
+      Latest OHLCV
+
+      See also : https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyOhlcvLatest
+    """
+    return self.__get('{}/cryptocurrency/ohlcv/latest'.format(self.__version), **kwargs)
+
+  def cryptocurrency_ohlcv_historical(self, **kwargs):
+    """
+      Historical OHLCV
+
+      See also : https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyOhlcvHistorical
+    """
+    return self.__get('{}/cryptocurrency/ohlcv/historical'.format(self.__version), **kwargs)
+
+  def cryptocurrency_priceperformancestats_latest(self, **kwargs):
+    """
+      Price performance Stats
+
+      See also : https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyPriceperformancestatsLatest
+    """
+    return self.__get('{}/cryptocurrency/price-performance-stats/latest'.format(self.__version), **kwargs)
 
   def exchange_map(self, **kwargs):
+    """
+      CoinMarketCap ID map
+
+      See also : https://coinmarketcap.com/api/documentation/v1/#operation/getV1ExchangeMap
+    """
     return self.__get('{}/exchange/map'.format(self.__version), **kwargs)
 
+  def exchange_info(self, **kwargs):
+    """
+      Metadata
+
+      See also : https://coinmarketcap.com/api/documentation/v1/#operation/getV1ExchangeInfo
+    """
+    return self.__get('{}/exchange/info'.format(self.__version), **kwargs)
+
   def exchange_listings_latest(self, **kwargs):
+    """
+      Latest listings
+
+      See also : https://coinmarketcap.com/api/documentation/v1/#operation/getV1ExchangeListingsLatest
+    """
     return self.__get('{}/exchange/listings/latest'.format(self.__version), **kwargs)
 
-  def exchange_market_pairs_latest(self, **kwargs):
-    return self.__get('{}/exchange/market-pairs/latest'.format(self.__version), **kwargs)
+  def exchange_listings_historical(self, **kwargs):
+    """
+      Historical listings
+
+      See also : https://coinmarketcap.com/api/documentation/v1/#operation/getV1ExchangeListingsHistorical
+    """
+    return self.__get('{}/exchange/listings/historical'.format(self.__version), **kwargs)
 
   def exchange_quotes_latest(self, **kwargs):
+    """
+      Latest quotes
+
+      See also : https://coinmarketcap.com/api/documentation/v1/#operation/getV1ExchangeQuotesLatest
+    """
     return self.__get('{}/exchange/quotes/latest'.format(self.__version), **kwargs)
 
   def exchange_quotes_historical(self, **kwargs):
+    """
+      Historical quotes
+
+      See also : https://coinmarketcap.com/api/documentation/v1/#operation/getV1ExchangeQuotesHistorical
+    """
     return self.__get('{}/exchange/quotes/historical'.format(self.__version), **kwargs)
 
-  def global_metrics_quotes_latest(self, **kwargs):
+  def exchange_marketpairs_latest(self, **kwargs):
+    """
+      Latest market pairs
+
+      See also : https://coinmarketcap.com/api/documentation/v1/#operation/getV1ExchangeMarketpairsLatest
+    """
+    return self.__get('{}/exchange/market-pairs/latest'.format(self.__version), **kwargs)
+
+  def globalmetrics_quotes_latest(self, **kwargs):
+    """
+      Latest global metrics
+
+      See also : https://coinmarketcap.com/api/documentation/v1/#operation/getV1GlobalmetricsQuotesLatest
+    """
     return self.__get('{}/global-metrics/quotes/latest'.format(self.__version), **kwargs)
 
-  def global_metrics_quotes_historical(self, **kwargs):
+  def globalmetrics_quotes_historical(self, **kwargs):
+    """
+      Historical global metrics
+
+      See also : https://coinmarketcap.com/api/documentation/v1/#operation/getV1GlobalmetricsQuotesHistorical
+    """
     return self.__get('{}/global-metrics/quotes/historical'.format(self.__version), **kwargs)
 
-  def tools_price_conversion(self, **kwargs):
+  def tools_priceconversion(self, **kwargs):
+    """
+      Price conversion tool
+
+      See also : https://coinmarketcap.com/api/documentation/v1/#operation/getV1ToolsPriceconversion
+    """
     return self.__get('{}/tools/price-conversion'.format(self.__version), **kwargs)
+
+  def blockchain_statistics_latest(self, **kwargs):
+    """
+      Latest statistics
+
+      See also : https://coinmarketcap.com/api/documentation/v1/#operation/getV1BlockchainStatisticsLatest
+    """
+    return self.__get('{}/blockchain/statistics/latest'.format(self.__version), **kwargs)
+
+  def fiat_map(self, **kwargs):
+    """
+      CoinMarketCap ID map
+
+      See also : https://coinmarketcap.com/api/documentation/v1/#operation/getV1FiatMap
+    """
+    return self.__get('{}/fiat/map'.format(self.__version), **kwargs)
+
+  def partners_flipsidecrypto_fcas_listings_latest(self, **kwargs):
+    """
+      List all available FCAS scores
+
+      See also : https://coinmarketcap.com/api/documentation/v1/#operation/getV1PartnersFlipsidecryptoFcasListingsLatest
+    """
+    return self.__get('{}/partners/flipside-crypto/fcas/listings/latest'.format(self.__version), **kwargs)
+
+  def partners_flipsidecrypto_fcas_quotes_latest(self, **kwargs):
+    """
+      Request specific FCAS scores
+
+      See also : https://coinmarketcap.com/api/documentation/v1/#operation/getV1PartnersFlipsidecryptoFcasQuotesLatest
+    """
+    return self.__get('{}/partners/flipside-crypto/fcas/quotes/latest'.format(self.__version), **kwargs)
+
+  def key_info(self, **kwargs):
+    """
+      Key Info
+
+      See also : https://coinmarketcap.com/api/documentation/v1/#operation/getV1KeyInfo
+    """
+    return self.__get('{}/key/info'.format(self.__version), **kwargs)
