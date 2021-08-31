@@ -1,27 +1,29 @@
 
 # Python-CoinMarketCap API Wrapper
-​
+
 This is a non official (but working) Python package to wrap the CoinMarketCap API. With this you can monitoring and watch the crypto market.
 
 - First, you have to create an API on the [Developper Portal](https://coinmarketcap.com/api/)
 - Read the official [API documentation](https://coinmarketcap.com/api/documentation/v1/)
 
+[![Downloads](https://pepy.tech/badge/python-coinmarketcap/week)](https://pepy.tech/project/python-coinmarketcap)
+
 ---
 
 ## Installation
-​
+
 __Via pip__
-​
+
 - pip install __python-coinmarketcap__
-​
+
 > /!\ *Don't confound with the coinmarketcap package.*
 
 ## Example
-​
+
 ```python
-​
+
   from coinmarketcapapi import CoinMarketCapAPI, CoinMarketCapAPIError
-​
+
   cmc = CoinMarketCapAPI('{YOUR_API_KEY}')
   
   r = cmc.cryptocurrency_info(symbol='BTC')
@@ -62,6 +64,13 @@ You have to pass to following methods the parameters detailled in the [official 
 | ([doc](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyOhlcvLatest)) __cryptocurrency_ohlcv_latest__ | Latest OHLCV | /cryptocurrency/ohlcv/latest |
 | ([doc](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyOhlcvHistorical)) __cryptocurrency_ohlcv_historical__ | Historical OHLCV | /cryptocurrency/ohlcv/historical |
 | ([doc](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyPriceperformancestatsLatest)) __cryptocurrency_priceperformancestats_latest__ | Price performance Stats | /cryptocurrency/price-performance-stats/latest |
+| ([doc](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyCategories)) __cryptocurrency_categories__ | Categories | /cryptocurrency/categories |
+| ([doc](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyCategory)) __cryptocurrency_category__ | Category | /cryptocurrency/category |
+| ([doc](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyAirdrops)) __cryptocurrency_airdrops__ | Airdrops | /cryptocurrency/airdrops |
+| ([doc](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyAirdrop)) __cryptocurrency_airdrop__ | Airdrop | /cryptocurrency/airdrop |
+| ([doc](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyTrendingLatest)) __cryptocurrency_trending_latest__ | Trending Latest | /cryptocurrency/trending/latest |
+| ([doc](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyTrendingMostvisited)) __cryptocurrency_trending_mostvisited__ | Trending Most Visited | /cryptocurrency/trending/most-visited |
+| ([doc](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyTrendingGainerslosers)) __cryptocurrency_trending_gainerslosers__ | Trending Gainers & Losers | /cryptocurrency/trending/gainers-losers |
 | ([doc](https://coinmarketcap.com/api/documentation/v1/#operation/getV1ExchangeMap)) __exchange_map__ | CoinMarketCap ID map | /exchange/map |
 | ([doc](https://coinmarketcap.com/api/documentation/v1/#operation/getV1ExchangeInfo)) __exchange_info__ | Metadata | /exchange/info |
 | ([doc](https://coinmarketcap.com/api/documentation/v1/#operation/getV1ExchangeListingsLatest)) __exchange_listings_latest__ | Latest listings | /exchange/listings/latest |
@@ -78,6 +87,9 @@ You have to pass to following methods the parameters detailled in the [official 
 | ([doc](https://coinmarketcap.com/api/documentation/v1/#operation/getV1PartnersFlipsidecryptoFcasQuotesLatest)) __partners_flipsidecrypto_fcas_quotes_latest__ | Request specific FCAS scores | /partners/flipside-crypto/fcas/quotes/latest |
 | ([doc](https://coinmarketcap.com/api/documentation/v1/#operation/getV1KeyInfo)) __key_info__ | Key Info | /key/info |
 
+__Additionnal Parameters__
+
+- `api_version` (str): if given, will fetch the given version of the endpoint (default is equal to the given version in the CoinMarketCapAPI instance wich is actually `v1`).
 
 __Example__
 
@@ -89,25 +101,31 @@ You can switch easly in the __sandbox mode__ without giving an API key or by set
   - `cmc = CoinMarketCapAPI() # You are in sandbox environnement`
 
 You can enable a __debuging mode__, just set `debug` to `True` to main class:
-​
+
 ```python
   cmc = CoinMarketCapAPI(debug=True)
   cmc.cryptocurrency_info(symbol='BTC')
 ```
-​
+
 This will produce this output :
-​
+
 ```
  2019-04-06 16:03:04,716 root         DEBUG    GET SANDBOX 'v1/cryptocurrency/info'
 PARAMETERS: {'symbol': 'BTC'}
 2019-04-06 16:03:05,004 root         DEBUG    RESPONSE: 288ms OK: {u'BTC': {u'category': u'coin', u'name': u'Bitcoin', u'tags': [u'mineable'], u'symbol': u'BTC', u'id': 1, [...]}
 ```
-​
+
+
+Optionnaly, you can pass (on-the-fly) a __specific version__ of an endpoint by given the `api_version` keyword argument directly to a method:
+```python
+cmc.cryptocurrency_listings_latest(..., api_version="v1.1")
+```
+
 __See also__
 - [Quick Start Guide](https://coinmarketcap.com/api/documentation/v1/#section/Quick-Start-Guide)
 
 ### Response
-​
+
 __Synopsis__
 
 You get results of the API in a `Response` instance. 
@@ -130,9 +148,9 @@ __Example__
 
 ```python
 r = cmc.cryptocurrency_info(symbol='BTC')
-print repr(r.status)
-print repr(r.data)
-print repr(r.credit_count)
+print(repr(r.status))
+print(repr(r.data))
+print(repr(r.credit_count))
 ```
 
 ### CoinMarketCapAPIError
@@ -148,9 +166,9 @@ __Property__
 __Example__
 
 ```python
-​
+
   from coinmarketcapapi import CoinMarketCapAPI, CoinMarketCapAPIError
-​
+
   cmc = CoinMarketCapAPI('{YOUR_API_KEY}') # Pro environnement
   # cmc = CoinMarketCapAPI() # Sandbox environnement
 
@@ -159,12 +177,12 @@ __Example__
   except CoinMarketCapAPIError as e:
     r = e.rep
 
-  print repr(r.error)
-  print repr(r.status)
-  print repr(r.data)
+  print(repr(r.error))
+  print(repr(r.status))
+  print(repr(r.data))
 
 ```
-​
+
 ---
 
 ## See this project on
@@ -173,14 +191,25 @@ __Example__
 - [Github](https://github.com/rsz44/python-coinmarketcap)
 
 ## ToDo
-​
+
 - [ ] Add Cryptocurrency Abstraction
 - [ ] Add Exchange Abstraction
 - [ ] Add GlobalMetrics Abstraction
 - [ ] Add Tools Abstraction
-​
+
 ## ChangeLog
-​
+
+- 31 aug 2021: Version 0.3
+  - Adding new endpoints (Aug 17):
+    + /v1/cryptocurrency/categories
+    + /v1/cryptocurrency/category
+    + /v1/cryptocurrency/airdrops
+    + /v1/cryptocurrency/airdrop
+    + /v1/cryptocurrency/trending/latest
+    + /v1/cryptocurrency/trending/most-visited
+    + /v1/cryptocurrency/trending/gainers-losers
+  - PEP 8 style
+  - Adding `api_version` keyword argument to all endpoints to change on-the-fly the api version to use.
 - 8 sept 2020: Version 0.2
   - Adding missing endpoints
   - Fixing sandbox mode (see [Issue #1](https://github.com/rsz44/python-coinmarketcap/issues/1))
