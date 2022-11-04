@@ -23,7 +23,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 import logging
 from logging.config import dictConfig
 import time
@@ -32,7 +31,7 @@ from requests import Request, Session
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 import json
 
-VERSION = "0.3"
+VERSION = "0.4"
 SANDBOX_API_KEY = 'b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c'
 LOGGING_CONFIG = {
     'version': 1,
@@ -50,13 +49,17 @@ LOGGING_CONFIG = {
     },
     'root': {
         'handlers': ['h'],
-        'level': logging.DEBUG,
+        'level': logging.DEBUG
     }
 }
 
 
 class APITimer(object):
-    """APITimer"""
+    """
+        APITimer
+
+        Just a simple timer to know how long the request took.
+    """
 
     def __init__(self):
         self.__t = time.time()
@@ -70,7 +73,29 @@ class APITimer(object):
 
 
 class Response(object):
-    """Response"""
+    """
+        Response
+
+        You get results of the API in a Response instance. This class should
+        not be instantiated other than by CoinMarketCapAPI itself.
+
+        Corresponding to standards and conventions (official documentation):
+        - data (dict): will give you the result.
+        - status (dict): the status object always included for both successful
+            calls and failures.
+        - credit_count (int): the number of credits this call utilized.
+        - elapsed (int): the number of milliseconds it took to process the
+            request to the server.
+        - total_elapsed (int): the total number of milliseconds it took to
+            process the request.
+        - timesamp (str): current time on the server when the call was
+            executed.
+        - error_code (str | None): In case of an error has been raised, this
+            property will give you the status error code.
+        - error_message (str | None): In case of an error has been raised, this
+            property will give details about error.
+        - error (bool): True if an error has been raised.
+    """
 
     def __init__(self, resp, timer):
         self.__payload = json.loads(resp.text)
@@ -117,7 +142,26 @@ class Response(object):
 
 
 class CoinMarketCapAPIError(Exception):
-    """CoinMarketCapAPIError"""
+    """
+        CoinMarketCapAPIError
+
+        If API returns an error, CoinMarketCapAPI will raise a
+        CoinMarketCapAPIError.
+        Basically any request that does not return a HTTP code 200 will be
+        considered as an error. The possible returned errors declared in
+        the official documentation have an HTTP code 400, 401, 403, 429 or
+        500.
+
+        You can get the response involved in the error:
+        ```
+            try:
+                ...
+            except coinmarketcapapi.CoinMarketCapAPIError as e:
+                print(e.rep) # The response isntance
+                raise Exception("Error during request.")
+        ```
+
+    """
 
     def __init__(self, r):
         super(CoinMarketCapAPIError, self).__init__(repr(r))
@@ -125,7 +169,17 @@ class CoinMarketCapAPIError(Exception):
 
 
 class CoinMarketCapAPI(object):
-    """CoinMarketCapAPI Wrapper Class"""
+    """
+        CoinMarketCapAPI
+
+        Main API wrapper to instanciate. Use with or without API key (Pro
+        or Sandbox environment).
+
+        Some keyword arguments are available:
+        - `debug`: (bool) activate the debug mode
+            (show request, response, time elapsed).
+        - `logger`: (logging.Logger) use to pass a custom logger.
+    """
 
     def __init__(self, api_key=None, **kwargs):
         self.__session = Session()
@@ -134,7 +188,7 @@ class CoinMarketCapAPI(object):
 
         if not self.__logger and self.__debug:
             dictConfig(LOGGING_CONFIG)
-            self.__logger = logging.getLogger()
+            self.__logger = logging.getLogger(__name__)
 
         self.__version = kwargs.get('version', 'v1')
 
@@ -153,13 +207,13 @@ class CoinMarketCapAPI(object):
         self.__headers = {
             'Accepts': 'application/json',
             'Accept-Encoding': 'deflate, gzip',
-            'X-CMC_PRO_API_KEY': api_key
+            'X-CMC_PRO_API_KEY': self.__key
         }
 
     def __get(self, url, **kwargs):
         timer = APITimer()
 
-        if self.__debug:
+        if self.__debug and self.__logger is not None:
             self.__logger.debug('GET {} {}\nPARAMETERS: {}'.format(
                 'SANDBOX' if self.__sandbox else 'PRO',
                 repr(url), repr(kwargs)))
@@ -176,7 +230,7 @@ class CoinMarketCapAPI(object):
             if rep.error:
                 if rep.error_code == 401 and \
                     "API Key is invalid" in rep.error_message and \
-                        self.__debug:
+                        self.__debug and self.__logger is None:
 
                     ak = 'sandbox-api' if self.__sandbox else 'pro-api'
                     self.__logger.warning(
@@ -184,10 +238,13 @@ class CoinMarketCapAPI(object):
                         .format(ak, not self.__sandbox) +
                         ' to CoinMarketCapAPI, see issue #1.')
 
+                print(self.__key)
+                print(self.__base_url)
                 raise CoinMarketCapAPIError(rep)
             return rep
         except (ConnectionError, Timeout, TooManyRedirects) as e:
-            self.__logger.warning(e)
+            if self.__logger is not None:
+                self.__logger.warning(e)
             raise e
 
     def cryptocurrency_map(self, **kwargs):
@@ -208,6 +265,7 @@ class CoinMarketCapAPI(object):
         """
         return self.__get(
             '/cryptocurrency/info',
+            api_version=kwargs.pop("api_version", "v2"),
             **kwargs)
 
     def cryptocurrency_listings_latest(self, **kwargs):
@@ -238,6 +296,7 @@ class CoinMarketCapAPI(object):
         """
         return self.__get(
             '/cryptocurrency/quotes/latest',
+            api_version=kwargs.pop("api_version", "v2"),
             **kwargs)
 
     def cryptocurrency_quotes_historical(self, **kwargs):
@@ -248,6 +307,7 @@ class CoinMarketCapAPI(object):
         """
         return self.__get(
             '/cryptocurrency/quotes/historical',
+            api_version=kwargs.pop("api_version", "v2"),
             **kwargs)
 
     def cryptocurrency_marketpairs_latest(self, **kwargs):
@@ -258,6 +318,7 @@ class CoinMarketCapAPI(object):
         """
         return self.__get(
             '/cryptocurrency/market-pairs/latest',
+            api_version=kwargs.pop("api_version", "v2"),
             **kwargs)
 
     def cryptocurrency_ohlcv_latest(self, **kwargs):
@@ -268,6 +329,7 @@ class CoinMarketCapAPI(object):
         """
         return self.__get(
             '/cryptocurrency/ohlcv/latest',
+            api_version=kwargs.pop("api_version", "v2"),
             **kwargs)
 
     def cryptocurrency_ohlcv_historical(self, **kwargs):
@@ -278,6 +340,7 @@ class CoinMarketCapAPI(object):
         """
         return self.__get(
             '/cryptocurrency/ohlcv/historical',
+            api_version=kwargs.pop("api_version", "v2"),
             **kwargs)
 
     def cryptocurrency_priceperformancestats_latest(self, **kwargs):
@@ -288,6 +351,7 @@ class CoinMarketCapAPI(object):
         """
         return self.__get(
             '/cryptocurrency/price-performance-stats/latest',
+            api_version=kwargs.pop("api_version", "v2"),
             **kwargs)
 
     def cryptocurrency_categories(self, **kwargs):
@@ -458,6 +522,17 @@ class CoinMarketCapAPI(object):
         """
         return self.__get(
             '/tools/price-conversion',
+            api_version=kwargs.pop("api_version", "v2"),
+            **kwargs)
+
+    def tools_postman(self, **kwargs):
+        """
+          Postman Conversion v1
+          See also :
+          https://coinmarketcap.com/api/documentation/v1/#operation/getV1ToolsPostman
+        """
+        return self.__get(
+            '/tools/postman',
             **kwargs)
 
     def blockchain_statistics_latest(self, **kwargs):
@@ -508,4 +583,44 @@ class CoinMarketCapAPI(object):
         """
         return self.__get(
             '/key/info',
+            **kwargs)
+
+    def content_posts_top(self, **kwargs):
+        """
+          Content Top Posts
+          See also :
+          https://coinmarketcap.com/api/documentation/v1/#operation/getV1ContentPostsTop
+        """
+        return self.__get(
+            '/content/posts/top',
+            **kwargs)
+
+    def content_posts_latest(self, **kwargs):
+        """
+          Content Latest Posts
+          See also :
+          https://coinmarketcap.com/api/documentation/v1/#operation/getV1ContentPostsLatest
+        """
+        return self.__get(
+            '/content/posts/latest',
+            **kwargs)
+
+    def content_posts_comments(self, **kwargs):
+        """
+          Content Posts Comments
+          See also :
+          https://coinmarketcap.com/api/documentation/v1/#operation/getV1ContentPostsComments
+        """
+        return self.__get(
+            '/content/posts/comments',
+            **kwargs)
+
+    def content_latest(self, **kwargs):
+        """
+          Content Latest
+          See also :
+          https://coinmarketcap.com/api/documentation/v1/#operation/getV1ContentLatest
+        """
+        return self.__get(
+            '/content/latest',
             **kwargs)
