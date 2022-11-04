@@ -31,7 +31,7 @@ from requests import Request, Session
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 import json
 
-VERSION = "0.4"
+VERSION = "0.5"
 SANDBOX_API_KEY = 'b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c'
 LOGGING_CONFIG = {
     'version': 1,
@@ -238,8 +238,6 @@ class CoinMarketCapAPI(object):
                         .format(ak, not self.__sandbox) +
                         ' to CoinMarketCapAPI, see issue #1.')
 
-                print(self.__key)
-                print(self.__base_url)
                 raise CoinMarketCapAPIError(rep)
             return rep
         except (ConnectionError, Timeout, TooManyRedirects) as e:

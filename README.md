@@ -209,6 +209,9 @@ except CoinMarketCapAPIError as e:
 
 ## ChangeLog
 
+- 4 nov 2022: Version 0.5
+  - Remove an unfortunate debug that could display text unnecessarily during an error.
+  - Yanked version 0.4
 - 4 nov 2022: Version 0.4
   - Adding new endpoints (Aug 18/Sep 19):
     + /v1/content/posts/top
