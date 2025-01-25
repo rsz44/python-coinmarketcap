@@ -13,11 +13,9 @@ This is a non-official (but working) Python package to wrap the CoinMarketCap AP
 
 ## Installation
 
-__Via pip__
-
-- pip install __python-coinmarketcap__
-
-> /!\ *Don't confuse this with the coinmarketcap package.*
+```
+pip install python-coinmarketcap
+```
 
 ## Example
 
@@ -58,45 +56,49 @@ __Methods__
 
 You have to pass to the following methods the parameters detailed in the [official documentation](https://coinmarketcap.com/api/documentation/v1/).
 
-| Methods and documentation | Endpoint (version) |
+| Methods and 📄documentation | Endpoint (version) |
 |-|-|
-| [📄 __cryptocurrency_map__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyMap) | /cryptocurrency/map |
-| [📄 __cryptocurrency_info__](https://coinmarketcap.com/api/documentation/v1/#operation/getV2CryptocurrencyInfo) | /cryptocurrency/info (v2) |
-| [📄 __cryptocurrency_listings_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyListingsLatest) | /cryptocurrency/listings/latest |
-| [📄 __cryptocurrency_listings_historical__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyListingsHistorical) | /cryptocurrency/listings/historical |
-| [📄 __cryptocurrency_quotes_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV2CryptocurrencyQuotesLatest) | /cryptocurrency/quotes/latest (v2) |
-| [📄 __cryptocurrency_quotes_historical__](https://coinmarketcap.com/api/documentation/v1/#operation/getV2CryptocurrencyQuotesHistorical) | /cryptocurrency/quotes/historical (v2) |
-| [📄 __cryptocurrency_marketpairs_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV2CryptocurrencyMarketpairsLatest) | /cryptocurrency/market-pairs/latest (v2) |
-| [📄 __cryptocurrency_ohlcv_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV2CryptocurrencyOhlcvLatest) | /cryptocurrency/ohlcv/latest (v2) |
-| [📄 __cryptocurrency_ohlcv_historical__](https://coinmarketcap.com/api/documentation/v1/#operation/getV2CryptocurrencyOhlcvHistorical) | /cryptocurrency/ohlcv/historical (v2) |
-| [📄 __cryptocurrency_priceperformancestats_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV2CryptocurrencyPriceperformancestatsLatest) | /cryptocurrency/price-performance-stats/latest (v2) |
-| [📄 __cryptocurrency_categories__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyCategories) | /cryptocurrency/categories |
-| [📄 __cryptocurrency_category__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyCategory) | /cryptocurrency/category |
-| [📄 __cryptocurrency_airdrops__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyAirdrops) | /cryptocurrency/airdrops |
-| [📄 __cryptocurrency_airdrop__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyAirdrop) | /cryptocurrency/airdrop |
-| [📄 __cryptocurrency_trending_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyTrendingLatest) | /cryptocurrency/trending/latest |
-| [📄 __cryptocurrency_trending_mostvisited__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyTrendingMostvisited) | /cryptocurrency/trending/most-visited |
-| [📄 __cryptocurrency_trending_gainerslosers__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyTrendingGainerslosers) | /cryptocurrency/trending/gainers-losers |
-| [📄 __exchange_map__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1ExchangeMap) | /exchange/map |
-| [📄 __exchange_info__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1ExchangeInfo) | /exchange/info |
-| [📄 __exchange_listings_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1ExchangeListingsLatest) | /exchange/listings/latest |
-| [📄 __exchange_listings_historical__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1ExchangeListingsHistorical) | /exchange/listings/historical |
-| [📄 __exchange_quotes_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1ExchangeQuotesLatest) | /exchange/quotes/latest |
-| [📄 __exchange_quotes_historical__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1ExchangeQuotesHistorical) | /exchange/quotes/historical |
-| [📄 __exchange_marketpairs_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1ExchangeMarketpairsLatest) | /exchange/market-pairs/latest |
-| [📄 __globalmetrics_quotes_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1GlobalmetricsQuotesLatest) | /global-metrics/quotes/latest |
-| [📄 __globalmetrics_quotes_historical__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1GlobalmetricsQuotesHistorical) | /global-metrics/quotes/historical |
-| [📄 __tools_priceconversion__](https://coinmarketcap.com/api/documentation/v1/#operation/getV2ToolsPriceconversion) | /tools/price-conversion (v2) |
-| [📄 __tools_postman__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1ToolsPostman) | /tools/postman |
-| [📄 __blockchain_statistics_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1BlockchainStatisticsLatest) | /blockchain/statistics/latest |
-| [📄 __fiat_map__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1FiatMap) | /fiat/map |
-| [📄 __partners_flipsidecrypto_fcas_listings_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1PartnersFlipsidecryptoFcasListingsLatest) | /partners/flipside-crypto/fcas/listings/latest |
-| [📄 __partners_flipsidecrypto_fcas_quotes_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1PartnersFlipsidecryptoFcasQuotesLatest) | /partners/flipside-crypto/fcas/quotes/latest |
-| [📄 __key_info__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1KeyInfo) | /key/info |
-| [📄 __content_posts_top__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1ContentPostsTop) | /content/posts/top |
-| [📄 __content_posts_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1ContentPostsLatest) | /content/posts/latest |
-| [📄 __content_posts_comments__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1ContentPostsComments) | /content/posts/comments |
-| [📄 __content_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1ContentLatest) | /content/latest |
+| [__cryptocurrency_map__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyMap) | /cryptocurrency/map |
+| [__cryptocurrency_info__](https://coinmarketcap.com/api/documentation/v1/#operation/getV2CryptocurrencyInfo) | /cryptocurrency/info (v2) |
+| [__cryptocurrency_listings_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyListingsLatest) | /cryptocurrency/listings/latest |
+| [__cryptocurrency_listings_historical__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyListingsHistorical) | /cryptocurrency/listings/historical |
+| [__cryptocurrency_quotes_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV2CryptocurrencyQuotesLatest) | /cryptocurrency/quotes/latest (v2) |
+| [__cryptocurrency_quotes_historical__](https://coinmarketcap.com/api/documentation/v1/#operation/getV2CryptocurrencyQuotesHistorical) | /cryptocurrency/quotes/historical (v2) |
+| [__cryptocurrency_marketpairs_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV2CryptocurrencyMarketpairsLatest) | /cryptocurrency/market-pairs/latest (v2) |
+| [__cryptocurrency_ohlcv_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV2CryptocurrencyOhlcvLatest) | /cryptocurrency/ohlcv/latest (v2) |
+| [__cryptocurrency_ohlcv_historical__](https://coinmarketcap.com/api/documentation/v1/#operation/getV2CryptocurrencyOhlcvHistorical) | /cryptocurrency/ohlcv/historical (v2) |
+| [__cryptocurrency_priceperformancestats_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV2CryptocurrencyPriceperformancestatsLatest) | /cryptocurrency/price-performance-stats/latest (v2) |
+| [__cryptocurrency_categories__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyCategories) | /cryptocurrency/categories |
+| [__cryptocurrency_category__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyCategory) | /cryptocurrency/category |
+| [__cryptocurrency_airdrops__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyAirdrops) | /cryptocurrency/airdrops |
+| [__cryptocurrency_airdrop__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyAirdrop) | /cryptocurrency/airdrop |
+| [__cryptocurrency_trending_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyTrendingLatest) | /cryptocurrency/trending/latest |
+| [__cryptocurrency_trending_mostvisited__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyTrendingMostvisited) | /cryptocurrency/trending/most-visited |
+| [__cryptocurrency_trending_gainerslosers__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CryptocurrencyTrendingGainerslosers) | /cryptocurrency/trending/gainers-losers |
+| [__exchange_map__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1ExchangeMap) | /exchange/map |
+| [__exchange_info__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1ExchangeInfo) | /exchange/info |
+| [__exchange_listings_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1ExchangeListingsLatest) | /exchange/listings/latest |
+| [__exchange_quotes_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1ExchangeQuotesLatest) | /exchange/quotes/latest |
+| [__exchange_quotes_historical__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1ExchangeQuotesHistorical) | /exchange/quotes/historical |
+| [__exchange_marketpairs_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1ExchangeMarketpairsLatest) | /exchange/market-pairs/latest |
+| [__globalmetrics_quotes_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1GlobalmetricsQuotesLatest) | /global-metrics/quotes/latest |
+| [__globalmetrics_quotes_historical__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1GlobalmetricsQuotesHistorical) | /global-metrics/quotes/historical |
+| [__tools_priceconversion__](https://coinmarketcap.com/api/documentation/v1/#operation/getV2ToolsPriceconversion) | /tools/price-conversion (v2) |
+| [__tools_postman__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1ToolsPostman) | /tools/postman |
+| [__blockchain_statistics_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1BlockchainStatisticsLatest) | /blockchain/statistics/latest |
+| [__fiat_map__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1FiatMap) | /fiat/map |
+| [__partners_flipsidecrypto_fcas_listings_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1PartnersFlipsidecryptoFcasListingsLatest) | /partners/flipside-crypto/fcas/listings/latest |
+| [__partners_flipsidecrypto_fcas_quotes_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1PartnersFlipsidecryptoFcasQuotesLatest) | /partners/flipside-crypto/fcas/quotes/latest |
+| [__key_info__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1KeyInfo) | /key/info |
+| [__content_posts_top__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1ContentPostsTop) | /content/posts/top |
+| [__content_posts_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1ContentPostsLatest) | /content/posts/latest |
+| [__content_posts_comments__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1ContentPostsComments) | /content/posts/comments |
+| [__content_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1ContentLatest) | /content/latest |
+| [__fearandgreed_latest__](https://coinmarketcap.com/api/documentation/v1/#operation/getV3FearandgreedLatest) | /fear-and-greed/latest (v3) |
+| [__fearandgreed_historical__](https://coinmarketcap.com/api/documentation/v1/#operation/getV3FearandgreedHistorical) | /fear-and-greed/historical (v3) |
+| [__exchange_assets__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1ExchangeAssets) | /exchange/assets |
+| [__community_trending_token__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CommunityTrendingToken) | /community/trending/token |
+| [__community_trending_topic__](https://coinmarketcap.com/api/documentation/v1/#operation/getV1CommunityTrendingTopic) | /community/trending/topic |
 
 __Additionnal Parameters__
 
@@ -200,15 +202,20 @@ except CoinMarketCapAPIError as e:
 - [PyPi](https://pypi.org/project/python-coinmarketcap/)
 - [Github](https://github.com/rsz44/python-coinmarketcap)
 
-## Some reading about the wrapper
-
-- [CoinMarketCap API Python Tutorial (2022)](https://analyzingalpha.com/coinmarketcap-api-python-tutorial), Leo Smigel, _analyzingalpha.com_
-    - A fairly comprehensive tutorial on how the API works and who uses this package.
-- [CoinMarketCap API - An Introductory Guide](https://algotrading101.com/learn/coinmarketcap-api-guide/), Igor Radovanovic, _algotrading101.com_
-    - A short guide that gives you an overview of the API and provides examples of its uses.
-
 ## ChangeLog
 
+- 25 jan 2025: Version 0.6
+  - New endpoints (2.0.8, 2.0.9, 2.0.10):
+    + /v3/fear-and-greed/latest
+    + /v3/fear-and-greed/historical
+    + /v1/community/trending/topic
+    + /v1/community/trending/token
+    + /v1/exchange/assets
+  - Now handle `JSONDecodeError` as `CoinMarketCapAPIError`.
+  - Removing 'exchange_listings_historical' method. Introduced in v0.2 (commit 6e3d605), there is no official trace of this endpoint and it doesn't seem to exist. This is probably a completion error when writing v0.2. If this endpoint is recognized, please open an issue.
+  - Almost complete rewriting of `./test.py`.
+  - No longer supported in Python 2.7
+  - Miscellaneous README adjustments
 - 4 nov 2022: Version 0.5
   - Remove an unfortunate debug that could display text unnecessarily during an error.
   - Yanked version 0.4
@@ -256,10 +263,3 @@ except CoinMarketCapAPIError as e:
   - Adding `deflate, gzip` encoding to receive data fast and efficiently.
   - Documentation: adding usefull links
 - 6 apr 2019: Version 0.1
-
-## Give me a coffee
-
-```
-  BTC: 39aosiow4nsUvYVA2kP1hZPNZ7ZbJ6ouKr
-  ETH: 0x45d940FDA3F1Ce91cA7CB478af72170bb6560201
-```

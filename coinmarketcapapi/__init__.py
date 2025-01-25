@@ -3,7 +3,7 @@
 
 # MIT License
 #
-# Copyright (c) 2019 Remi SARRAZIN
+# Copyright (c) 2019-2025 Remi SARRAZIN
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ from requests import Request, Session
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 import json
 
-VERSION = "0.5"
+__version__ = VERSION = "0.6"
 SANDBOX_API_KEY = 'b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c'
 LOGGING_CONFIG = {
     'version': 1,
@@ -79,6 +79,18 @@ class Response(object):
         You get results of the API in a Response instance. This class should
         not be instantiated other than by CoinMarketCapAPI itself.
 
+        See:
+        https://coinmarketcap.com/api/documentation/v1/#section/
+        Errors-and-Rate-Limits
+
+        Nota bene: 999 [LOCAL_JSON_DECODE_ERROR] is an arbitrary LOCAL error
+            code set in case of JSON decode error. As defined in Standards and
+            Conventions:
+                'All endpoints return data in JSON format with the results of
+                your query under `data` if the call is successful.'
+            You may receive this error when the call is NOT successful. In this
+            case, the full text is displayed with an appropriate error message.
+
         Corresponding to standards and conventions (official documentation):
         - data (dict): will give you the result.
         - status (dict): the status object always included for both successful
@@ -95,11 +107,23 @@ class Response(object):
         - error_message (str | None): In case of an error has been raised, this
             property will give details about error.
         - error (bool): True if an error has been raised.
+
     """
 
     def __init__(self, resp, timer):
-        self.__payload = json.loads(resp.text)
+        try:
+            # Normal behaviour handle (Response is valid JSON).
+            self.__payload = json.loads(resp.text)
+        except json.decoder.JSONDecodeError as decode_error:
+            # Decoding Error handle.
+            self.__payload = {
+                'message':
+                f'Local error, expecting a valid JSON, got:\t\n"{resp.text}"',
+                'error': True,
+                'statusCode': '999 [LOCAL_JSON_DECODE_ERROR]',
+            }
         self.__timer = timer
+        self._req = resp
         self._message = self.__payload.get('message', None)
         self._error = self.__payload.get('error', None)
         self._statusCode = self.__payload.get('statusCode', None)
@@ -452,16 +476,6 @@ class CoinMarketCapAPI(object):
             '/exchange/listings/latest',
             **kwargs)
 
-    def exchange_listings_historical(self, **kwargs):
-        """
-          Historical listings
-          See also :
-          https://coinmarketcap.com/api/documentation/v1/#operation/getV1ExchangeListingsHistorical
-        """
-        return self.__get(
-            '/exchange/listings/historical',
-            **kwargs)
-
     def exchange_quotes_latest(self, **kwargs):
         """
           Latest quotes
@@ -621,4 +635,56 @@ class CoinMarketCapAPI(object):
         """
         return self.__get(
             '/content/latest',
+            **kwargs)
+
+    def fearandgreed_latest(self, **kwargs):
+        """
+          Fear and Greed Index Latest
+          See also :
+          https://coinmarketcap.com/api/documentation/v1/#operation/getV3FearandgreedLatest
+        """
+        return self.__get(
+            '/fear-and-greed/latest',
+            api_version=kwargs.pop("api_version", "v3"),
+            **kwargs)
+
+    def fearandgreed_historical(self, **kwargs):
+        """
+          Fear and Greed Index Historical
+          See also :
+          https://coinmarketcap.com/api/documentation/v1/#operation/getV3FearandgreedHistorical
+        """
+        return self.__get(
+            '/fear-and-greed/historical',
+            api_version=kwargs.pop("api_version", "v3"),
+            **kwargs)
+
+    def exchange_assets(self, **kwargs):
+        """
+          Exchange Assets
+          See also :
+          https://coinmarketcap.com/api/documentation/v1/#operation/getV1ExchangeAssets
+        """
+        return self.__get(
+            '/exchange/assets',
+            **kwargs)
+
+    def community_trending_token(self, **kwargs):
+        """
+          Community Trending Token
+          See also :
+          https://coinmarketcap.com/api/documentation/v1/#operation/getV1CommunityTrendingToken
+        """
+        return self.__get(
+            '/community/trending/token',
+            **kwargs)
+
+    def community_trending_topic(self, **kwargs):
+        """
+          Community Trending Topic
+          See also :
+          https://coinmarketcap.com/api/documentation/v1/#operation/getV1CommunityTrendingTopic
+        """
+        return self.__get(
+            '/community/trending/topic',
             **kwargs)
